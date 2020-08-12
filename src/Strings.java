@@ -7,7 +7,7 @@ public class Strings {
     public static void main(String[] args){
         Strings main = new Strings();
         //main.stringPalindromeCheck(1, 30, 1, 100);
-        main.stringAnagramPalindrome(1, 100, 1, 1000);
+        main.upperCaseConversion(1, 100, 1, 1000);
     }
     public String[] takeUserString(int noOfTestCasesLower, int noOfTestCasesHigher, int noOfCharInStringLower, int noOfCharInStringHigher){
         Scanner sc = new Scanner(System.in);
@@ -24,11 +24,11 @@ public class Strings {
         }
         String[] arrayOfStrings = new String[noOfTestCases];
 
-        String currentString = "";
+        String currentString;
         int stringCounter = 0;
         while(true){
             System.out.println("Enter a string to test. This is string: " + stringCounter);
-            currentString = sc.next();
+            currentString = sc.nextLine();
             int strLength = currentString.length();
             if(strLength >= noOfCharInStringLower && strLength <= noOfCharInStringHigher){
                 System.out.println("Constraints met, adding to array");
@@ -157,7 +157,7 @@ public class Strings {
                     currentString = currentString.replaceAll(charToCheck, ""); //just for simplicities sake, if a letter is repeated an even number of times, it has been processed already and so can be deleted to prevent too many output statements.
                 } else {
                     System.out.println(charToCheck + " -- this character is present odd number of times, adding a counter");
-                    oddCharCounter++; 
+                    oddCharCounter++;
                     currentString = currentString.replaceAll(charToCheck, ""); // a problem occurs when this is checked; if the letter is repeated multiple times, it registers as multiple separate letters and causes the counter to go up more than once for a single letter. Therefore, odd occurrences are removed as they are found to prevent repetitions.
                 }
                 if(oddCharCounter > 1){ //check to see if there are an odd number of these once taking away the only one repeatable
@@ -167,6 +167,23 @@ public class Strings {
                 }
             }
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~ Is a palindrome possible? " + isAnagramPossible + " ~~~~~~~~~~~~~~~~~~~~~~~");
+        }
+    }
+    public void upperCaseConversion(int noOfTestCasesLower, int noOfTestCasesHigher, int noOfCharInStringLower, int noOfCharInStringHigher){
+        String[] userStrings = takeUserString(noOfTestCasesLower, noOfTestCasesHigher, noOfCharInStringLower, noOfCharInStringHigher);
+        for (int i = 0; i < userStrings.length; i++) {
+            String currentString = userStrings[i];
+            StringBuilder s = new StringBuilder(currentString);
+            char[] firstLetter = Character.toString(currentString.charAt(0)).toUpperCase().toCharArray();
+            s.setCharAt(0, firstLetter[0]); //these first few lines make sure the first letter in the string is capitalized, since there usually is no space before it
+            for (int j = 0; j < currentString.length(); j++) {
+                char currentChar = currentString.charAt(j);
+                if(currentChar == ' '){
+                    char capitalChar = Character.toString(currentString.charAt(j+1)).toUpperCase().toCharArray()[0];
+                    s.setCharAt(j + 1, capitalChar); //will get the char at the index right after the space, and capitalize it, then replace the original char with the new capital char
+                }
+            }
+            System.out.println(s); //i love programming
         }
     }
 }
