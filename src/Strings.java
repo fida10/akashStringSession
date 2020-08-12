@@ -7,7 +7,7 @@ public class Strings {
     public static void main(String[] args){
         Strings main = new Strings();
         //main.stringPalindromeCheck(1, 30, 1, 100);
-        main.stringAnagram(1, 300, 1, (int)Math.pow(10, 6));
+        main.stringAnagramPalindrome(1, 100, 1, 1000);
     }
     public String[] takeUserString(int noOfTestCasesLower, int noOfTestCasesHigher, int noOfCharInStringLower, int noOfCharInStringHigher){
         Scanner sc = new Scanner(System.in);
@@ -48,7 +48,7 @@ public class Strings {
     }
     public List<String[]> takeTwoUserStrings(int noOfTestCasesLower, int noOfTestCasesHigher, int noOfCharInStringLower, int noOfCharInStringHigher){
         Scanner sc = new Scanner(System.in);
-        int noOfTestCases = 0;
+        int noOfTestCases;
         while(true){
             System.out.println("Enter number of test cases (strings to check)");
             noOfTestCases = sc.nextInt();
@@ -120,14 +120,17 @@ public class Strings {
         for (int i = 0; i < noOfTestCases; i++) {
             String currentStringOne = firstString[i];
             String currentStringTwo = secondString[i];
+            System.out.println("Length of first string is: " + currentStringOne.length() + " and length of second string is: " + currentStringTwo.length());
+            System.out.println("Current strings being compared: " + currentStringOne + " " + currentStringTwo);
+            int secondStringOriginalLength = currentStringTwo.length();
             for(int j = 0; j < currentStringOne.length(); j++){
-                if(currentStringOne.length() != currentStringTwo.length()){ //will check if strings are of the same length; if not, the outer loop will be skipped for this set of strings
+                if(currentStringOne.length() != secondStringOriginalLength){ //will check if strings are of the same length; if not, the outer loop will be skipped for this set of strings
                     System.out.println("Strings are not the same length, therefore they cannot be anagrams");
                     break;
                 }
                 String currentChar = Character.toString(currentStringOne.charAt(j));
                 if(currentStringTwo.contains(currentChar)){
-                    currentStringTwo += currentStringTwo.replace(currentChar, "");
+                    currentStringTwo = currentStringTwo.replaceFirst(currentChar, "");
                 } else {
                     System.out.println(currentChar + " -- This char is not present in the second string, therefore these strings are not anagrams." );
                     break;
@@ -138,6 +141,32 @@ public class Strings {
             } else {
                 System.out.println("Strings are not an anagram");
             }
+        }
+    }
+    public void stringAnagramPalindrome(int noOfTestCasesLower, int noOfTestCasesHigher, int noOfCharInStringLower, int noOfCharInStringHigher){
+        String[] userStringArray = takeUserString(noOfTestCasesLower, noOfTestCasesHigher, noOfCharInStringLower, noOfCharInStringHigher);
+        for (int i = 0; i < userStringArray.length; i++) {
+            int oddCharCounter = 0; //this wil count the number of times a char is found to be present only once in the string. if this is more than 1, it is definitely not an anagram
+            String currentString = userStringArray[i];
+            boolean isAnagramPossible = true;
+            for (int j = 0; j < currentString.length(); j++) {
+                String charToCheck = Character.toString(currentString.charAt(j)); //geeksoskeeg --> 11 - 9 = 2
+                int countOfThisChar = currentString.length() - currentString.replaceAll(charToCheck, "").length(); //takes the total length and subtract string length of string WITHOUT this char, will give us the number of occurrences of this char in the string
+                if((countOfThisChar + 2) % 2 == 0){ //checks if the char repeats an even number of times. If it is odd, this statement gives 1, not 0.
+                    System.out.println(charToCheck + " -- this character is present even number of times, continuing");
+                    currentString = currentString.replaceAll(charToCheck, ""); //just for simplicities sake, if a letter is repeated an even number of times, it has been processed already and so can be deleted to prevent too many output statements.
+                } else {
+                    System.out.println(charToCheck + " -- this character is present odd number of times, adding a counter");
+                    oddCharCounter++; 
+                    currentString = currentString.replaceAll(charToCheck, ""); // a problem occurs when this is checked; if the letter is repeated multiple times, it registers as multiple separate letters and causes the counter to go up more than once for a single letter. Therefore, odd occurrences are removed as they are found to prevent repetitions.
+                }
+                if(oddCharCounter > 1){ //check to see if there are an odd number of these once taking away the only one repeatable
+                    System.out.println("More than one character is repeated only once, so this cannot be an anagram. Ending check for this string");
+                    isAnagramPossible = false;
+                    break;
+                }
+            }
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~ Is a palindrome possible? " + isAnagramPossible + " ~~~~~~~~~~~~~~~~~~~~~~~");
         }
     }
 }
