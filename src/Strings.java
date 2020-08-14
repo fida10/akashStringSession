@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,11 +8,11 @@ public class Strings {
     public static void main(String[] args){
         Strings main = new Strings();
         //main.stringPalindromeCheck(1, 30, 1, 100);
-        main.upperCaseConversion(1, 100, 1, 1000);
+        main.stringSortStringDescOrder(1, 100, 1, (int) Math.pow(10, 5));
     }
     public String[] takeUserString(int noOfTestCasesLower, int noOfTestCasesHigher, int noOfCharInStringLower, int noOfCharInStringHigher){
         Scanner sc = new Scanner(System.in);
-        int noOfTestCases = 0;
+        int noOfTestCases;
         while(true){
             System.out.println("Enter number of test cases (strings to check)");
             noOfTestCases = sc.nextInt();
@@ -23,7 +24,6 @@ public class Strings {
             }
         }
         String[] arrayOfStrings = new String[noOfTestCases];
-
         String currentString;
         int stringCounter = 0;
         while(true){
@@ -183,7 +183,45 @@ public class Strings {
                     s.setCharAt(j + 1, capitalChar); //will get the char at the index right after the space, and capitalize it, then replace the original char with the new capital char
                 }
             }
-            System.out.println(s); //i love programming
+            System.out.println(s);
+        }
+    }
+    public void stringSortStringDescOrder(int noOfTestCasesLower, int noOfTestCasesHigher, int noOfCharInStringLower, int noOfCharInStringHigher){
+        String[] userString = takeUserString(noOfTestCasesLower, noOfTestCasesHigher, noOfCharInStringLower, noOfCharInStringHigher); //this will apply constraints, directly from the user
+        for (int i = 0; i < userString.length; i++) {
+            String currentString = userString[i];
+            String alphabeticalString = "";
+            int[] stringInAsciiArray = new int[currentString.length()];
+            for (int j = 0; j < currentString.length(); j++) {
+                stringInAsciiArray[j] = (int) currentString.charAt(j);
+            }
+            //Arrays.sort(stringInAsciiArray); //all this code below can be done with this single line -_-
+            List<Integer> intermediaryListOfAsciiInts = new ArrayList<Integer>(); //so i can remove elements from this later
+            for (int j = 0; j < stringInAsciiArray.length; j++) {
+                intermediaryListOfAsciiInts.add(j, stringInAsciiArray[j]);
+            }
+            int[] stringInAsciiArrayOrdered = new int[stringInAsciiArray.length];
+            for (int j = 0; j < stringInAsciiArray.length; j++) {
+                Integer currentMin = intermediaryListOfAsciiInts.get(0);
+                int currentMinIndex = 0;
+                Integer nextNo;
+                for (int k = 0; k < intermediaryListOfAsciiInts.size(); k++) {
+                    nextNo = intermediaryListOfAsciiInts.get(k);
+                    if(nextNo < currentMin && intermediaryListOfAsciiInts.contains(nextNo)){
+                        currentMin = nextNo;
+                        currentMinIndex = k;
+                    }
+                }
+                stringInAsciiArrayOrdered[j] = currentMin;
+                intermediaryListOfAsciiInts.remove(currentMinIndex);
+            }
+            stringInAsciiArray = stringInAsciiArrayOrdered;
+            //up to here, all this could be done by sort method
+
+            for (int j = stringInAsciiArray.length - 1; j >= 0; j--) {
+                alphabeticalString = alphabeticalString.concat(Character.toString(stringInAsciiArray[j]));
+            }
+            System.out.println(alphabeticalString);
         }
     }
 }
